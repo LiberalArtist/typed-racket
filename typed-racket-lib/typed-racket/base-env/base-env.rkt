@@ -3081,15 +3081,48 @@
 
 ;; Section 15.9 (racket/cmdline)
 [parse-command-line
- (let ([mode-sym (one-of/c 'once-each 'once-any 'multi 'final 'help-labels)])
-   (-polydots (b a)
-              (cl->* (-Pathlike
-                      (Un (-lst -String) (-vec -String))
-                      (-lst (Un (-pair mode-sym (-lst (-lst Univ)))
-                                (-pair (-val 'ps) (-lst -String))))
-                      ((list Univ) [a a] . ->... . b)
-                      (-lst -String)
-                      . -> . b))))]
+ (let ([mode-sym (one-of/c 'once-each 'once-any 'multi 'final)]
+       [label-sym (one-of/c 'ps 'help-labels 'usage-help)])
+   (-polydots
+    (b a) 
+    (cl->* (->opt -Pathlike
+                  (Un (-lst -String) (-vec -String))
+                  (-lst (Un (-pair mode-sym
+                                   (-lst (-lst* (-lst -String)
+                                                ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                ;; here we would like to raise a type
+                                                ;; error if the proc
+                                                ;; expects some non-string arg
+                                                top-func ;better than Univ
+                                                #;(Un
+                                                   (-> -String Univ)
+                                                   (-> -String -String Univ)
+                                                   (-> -String -String -String Univ)
+                                                   (->* (list -String) -String Univ)
+                                                   (-polydots ;Univ  ???????????
+                                                   
+                                                    (c)
+                                                    (->... (list -String)
+                                                           [-String c]
+                                                           Univ))
+                                                   #;top-func)
+                                                #;(-polydots ;Univ  ???????????
+                                                   
+                                                   (c)
+                                                   (->... (list -String)
+                                                          [-String c]
+                                                          Univ))
+                                                ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                (-pair (Un -String (-lst -String))
+                                                       (-lst -String)))))
+                            (-pair label-sym
+                                   (-lst -String))))
+                  (->... (list (-lst Univ)) [-String a] b) 
+                  (-lst -String)
+                  [(-> -String Univ)
+                   (Un (->* (list -String) -String Univ) ; why doesn't this print?
+                       (-> -String Univ))]
+                  b))))] 
 
 ;; Section 16.1 (Weak Boxes)
 [make-weak-box (-poly (a) (-> a (-weak-box a)))]
