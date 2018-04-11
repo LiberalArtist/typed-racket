@@ -3117,6 +3117,7 @@
                                                        (-lst -String)))))
                             (-pair label-sym
                                    (-lst -String))))
+                  ; this doesn't forbid a proc with an optional non-string arg
                   (->... (list (-lst Univ)) [-String a] b) 
                   (-lst -String)
                   [(-> -String Univ)
