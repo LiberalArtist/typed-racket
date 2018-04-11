@@ -3089,40 +3089,25 @@
                   (Un (-lst -String) (-vec -String))
                   (-lst (Un (-pair mode-sym
                                    (-lst (-lst* (-lst -String)
-                                                ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                                                ;; here we would like to raise a type
-                                                ;; error if the proc
-                                                ;; expects some non-string arg
-                                                top-func ;better than Univ
-                                                #;(Un
-                                                   (-> -String Univ)
-                                                   (-> -String -String Univ)
-                                                   (-> -String -String -String Univ)
-                                                   (->* (list -String) -String Univ)
-                                                   (-polydots ;Univ  ???????????
-                                                   
-                                                    (c)
-                                                    (->... (list -String)
-                                                           [-String c]
-                                                           Univ))
-                                                   #;top-func)
-                                                #;(-polydots ;Univ  ???????????
-                                                   
-                                                   (c)
-                                                   (->... (list -String)
-                                                          [-String c]
-                                                          Univ))
-                                                ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                                                ;; Accepts flags procedures that take 0-5 mandatory
+                                                ;; command-line arguments and (implicitly)
+                                                ;; flag procedures that consume all remaining
+                                                ;; command-line argumets.
+                                                (Un (-> -String Univ)
+                                                    (-> -String -String Univ)
+                                                    (-> -String -String -String Univ)
+                                                    (-> -String -String -String -String Univ)
+                                                    (-> -String -String -String -String -String Univ)
+                                                    (-> -String -String -String -String -String -String Univ))
                                                 (-pair (Un -String (-lst -String))
                                                        (-lst -String)))))
                             (-pair label-sym
                                    (-lst -String))))
-                  ; this doesn't forbid a proc with an optional non-string arg
-                  (->... (list (-lst Univ)) [-String a] b) 
+                  (->... (list (-lst Univ)) [-String a] b)
                   (-lst -String)
                   [(-> -String Univ)
-                   (Un (->* (list -String) -String Univ) ; why doesn't this print?
-                       (-> -String Univ))]
+                   ;; Still permits unknown-proc args that accept rest arguments
+                   (-> -String Univ)]
                   b))))] 
 
 ;; Section 16.1 (Weak Boxes)
